@@ -83,6 +83,12 @@ abstract class APIController
      */
     protected $scope;
 
+
+    /**
+     * File to save access token after request.
+     */
+    protected $oauth_file;
+
     /**
      * Results stored after API calls.
      *
@@ -96,6 +102,9 @@ abstract class APIController
      * @var array
      */
     protected $errors;
+
+
+
 
     /**
      * Gets an access token that will be cached using a session.
@@ -116,7 +125,7 @@ abstract class APIController
             unserialize($_SESSION['token']) : null;
 
         // load redirect URL
-        include __DIR__ . '/../../config.php';
+        //include __DIR__ . '/../../config.php';
 
         // No token or token is expired... send token request
         if (!$token || $token->isAccessTokenExpired()) {
@@ -150,15 +159,12 @@ abstract class APIController
      */
     protected function getFileToken()
     {
-        // load location where to save token
-        include __DIR__ . '/../../config.php';
-
-        if (!isset($oauth_file)) {
+        if (!isset($this->oauth_file)) {
             // set default if can't load
-            $oauth_file = 'token.php';
+            $this->oauth_file = 'token.php';
         }
 
-        $token = OAuthToken::loadToken($oauth_file);
+        $token = OAuthToken::loadToken($this->oauth_file);
         if ($token == null || $token->isAccessTokenExpired()) {
             $tokenSrvc = new OAuthTokenService(
                 $this->oauthFQDN,
@@ -167,7 +173,7 @@ abstract class APIController
             );
             $token = $tokenSrvc->getTokenUsingScope($this->scope);
             // save token for future use
-            $token->saveToken($oauth_file);
+            $token->saveToken($this->oauth_file);
         }
 
         return $token;
@@ -212,7 +218,7 @@ abstract class APIController
     protected function __construct()
     {
         // Copy config values to member variables
-        include __DIR__ . '/../../config.php';
+        //include __DIR__ . '/../../config.php';
         $this->oauthFQDN = isset($oauthFQDN) ? $oauthFQDN : $FQDN;
         $this->apiFQDN = isset($apiFQDN) ? $apiFQDN : $FQDN;
         $this->clientId = $api_key;
