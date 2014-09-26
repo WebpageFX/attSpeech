@@ -167,11 +167,11 @@ abstract class APIController
         $token = OAuthToken::loadToken($this->oauth_file);
         if ($token == null || $token->isAccessTokenExpired()) {
             $tokenSrvc = new OAuthTokenService(
-                $this->oauthFQDN,
+                $this->FQDN,
                 $this->clientId,
                 $this->clientSecret
             );
-            $token = $tokenSrvc->getTokenUsingScope($this->scope);
+            $token = $tokenSrvc->getToken($this->scope);
             // save token for future use
             $token->saveToken($this->oauth_file);
         }
