@@ -215,16 +215,8 @@ abstract class APIController
     /**
      * Initializes common information for a Controller object.
      */
-    protected function __construct()
+    public function __construct()
     {
-        // Copy config values to member variables
-        //include __DIR__ . '/../../config.php';
-        $this->oauthFQDN = isset($oauthFQDN) ? $oauthFQDN : $FQDN;
-        $this->apiFQDN = isset($apiFQDN) ? $apiFQDN : $FQDN;
-        $this->clientId = $api_key;
-        $this->clientSecret = $secret_key;
-        $this->scope = $scope;
-
         $this->results = array();
         $this->errors = array();
 
